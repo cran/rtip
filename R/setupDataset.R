@@ -6,14 +6,14 @@
 #'
 #' @param dataset a data.frame containing variables in the EU-SILC microdata format.
 #' @param country a character string specifying the country whose data will be considered.
-#' @param region a character string specifying the region of the country whose data will be considered.
-#' @param s either a character string or a numeric value between 0 and 1 specifying the equivalence scale to be used to obtain the equivalized disposable income. The default ("OECD") considers the standar modified OECD scale.
-#' @param deflac numeric; a number to be used as a deflator. The default (NULL) will not apply any deflation.
-#' @param ppp a logical; if it is TRUE the purchasing power parity (PPP) exchange rate will be used.
+#' @param region a character/vector string specifying the region(s) of the country whose data will be considered. The default (NULL) considers all regions in the country.
+#' @param s a numeric value between 0 and 1 specifying the equivalence scale to be used to obtain the equivalised disposable income. The default (NULL) considers the standard modified OECD scale.
+#' @param deflator numeric; a number to be used as a deflator. The default (NULL) will not apply any deflation.
+#' @param pppr the purchasing power parity rate (PPPR) will be used. Default is NULL.
 #'
-#' @details We obtain the equivalized disposable income with the equivalence
+#' @details We obtain the equivalised disposable income with the equivalence
 #' scale of Buhmann et al. (1988) by assigning a numeric value between 0 and 1
-#' to argument s . The parameter s is called elasticity of equivalence.
+#' to argument s. The parameter s is called elasticity of equivalence.
 #'
 #' The purchasing power parity exchange rate is useful for making comparisons between countries.
 #'
@@ -26,8 +26,8 @@
 #'  \item HX040 an integer vector containing information about households size.
 #'  \item HX050 a numeric vector containing information about the equivalised household size. The scale employed is the modified OECD scale.
 #'  \item HX090 a numeric vector containing information about equivalised disposable income (with the modified OECD scale).
-#'  \item ipuc a numeric vector containing the income per unit of consumption. This variable takes into account if deflac is not NULL, ppp is TRUE or/and the value assigned to \emph{s}.
-#'  \item wHX040 a numeric vector which is obtained by multiplying DB090 by HX040. It represents household weights taking into account the size of the household.
+#'  \item ipuc a numeric vector containing the income per unit of consumption. This variable takes into account the value assigned to s and pppr (if they are not NULL).
+#'  \item wHX040 a numeric vector which is set to DB090*HX040. It represents household weights taking into account the size of the household.
 #' }
 #'
 #' @seealso loadEUSILC, loadLCS
@@ -43,10 +43,16 @@
 
 setupDataset <- function(dataset,
                          country = 'ES' ,
-                         region = 'all',
-                         s = 'OECD',
-                         deflac = NULL,
-                         ppp = FALSE) {
+                         region = NULL,
+                         s = NULL,
+                         deflator = NULL,
+                         pppr = NULL) {
+
+  if (is.character(s)) {
+    warning("argument s = 'OECD' is deprecated; please check the documentation", call. = FALSE)
+    s <- NULL
+  }
+
 
   # The following line is only to overcome the note obtained by
   # R CMD check, because the using in subset function
@@ -58,47 +64,32 @@ setupDataset <- function(dataset,
     stop("The variable country is mandatory")
   }
 
-  if(region != 'all'){ # only for one region
-    dataset <- subset(dataset, DB040 == region)
+  if(!is.null(region)){ # filter the region(s)
+      dataset <- subset(dataset, DB040 %in% region)
   }
 
-  ok.cases <- complete.cases(dataset)
-  dataset <- dataset[ok.cases,]
+  dataset <- dataset[complete.cases(dataset),]
 
-
-  #   remove.data <- which(is.na(dataset$HX090)) # renove NA data
-#
-#   if(length(remove.data) != 0){
-#     dataset <- dataset[-remove.data, ]
-#   }
-#
-  if(ppp){ # Purchasing power parity
-    aux.year <- unique(dataset$DB010)
-    ppp.rates <- subset(ppp.rates, year == aux.year)
-    country1 <- country
-    indx4ppp <- which(ppp.rates$country == country1)
-
-    if(is.na(ppp.rates$ppp[indx4ppp])){
-      stop(paste("Country ", country1, " has NA as ppp value", sep = ""))
-    }else{
-      ppp.rate <- ppp.rates$ppp[indx4ppp]/ppp.rates$rate[indx4ppp]
-    }
-    dataset$HX090 <- dataset$HX090/ppp.rate
-    rm(ppp.rates)
+  if(!is.null(pppr)){ # Purchasing power parity
+    dataset$HX090 <- dataset$HX090/pppr
   }
 
-  if(!is.null(deflac)){ # Deflaction
-    dataset$HX090 <- dataset$HX090/deflac
+  if(!is.null(deflator)){ # Deflation
+    dataset$HX090 <- dataset$HX090/deflator
   }
 
   # income per unit of consumption
-  if(s == "OECD"){
+  if(is.null(s)){
     dataset$ipuc <- dataset$HX090
   }else{
     dataset$ipuc <- (dataset$HX090*dataset$HX050)/dataset$HX040^s
   }
 
   dataset$wHX040 <- dataset$DB090*dataset$HX040
+
+  if(length(which(dataset$ipuc<0))!=0){
+    warning("Some of the income values are negatives")
+  }
 
   return(dataset)
 }

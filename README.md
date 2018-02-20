@@ -1,5 +1,10 @@
 # rtip
 
+[![Build Status](https://travis-ci.org/AngelBerihuete/rtip.svg?branch=master)](https://travis-ci.org/AngelBerihuete/rtip)
+[![CRAN_Status_Badge](http://cranlogs.r-pkg.org/badges/grand-total/rtip)]
+(http://cran.r-project.org/package=rtip)
+
+
 rtip is an R package containing tools to measure and compare inequality, 
 welfare and poverty using the EU statistics on income and living conditions 
 surveys (EU-SILC). 
@@ -28,7 +33,7 @@ threshold:
 ```R
 library(rtip)
 data(eusilc2)
-ATdataset <- setupDataset(eusilc2, country = "AT", s = "OECD")
+ATdataset <- setupDataset(eusilc2, country = "AT")
 arpr(ATdataset,arpt.value = arpt(ATdataset))
 ```
 
@@ -51,4 +56,17 @@ ATdataset <- setupDataset(eusilc2, country = "AT")
 ATdataset1 <- setupDataset(eusilc2, country = "AT", region = "Burgenland")
 ATdataset2 <- setupDataset(eusilc2, country = "AT", region = "Carinthia")
 testTIP(ATdataset1, ATdataset, same.arpt.value = arpt(ATdataset))
+```
+
+## Citation
+A BibTeX entry for LaTeX users is
+```bibtex
+  @Manual{,
+    title = {rtip: Inequality, Welfare and Poverty Indices and Curves using the
+EU-SILC Data},
+    author = {Angel Berihuete and Carmen Dolores Ramos and Miguel Angel Sordo},
+    year = {2016},
+    note = {R package version 1.0.0},
+    url = {https://CRAN.R-project.org/package=rtip},
+  }
 ```

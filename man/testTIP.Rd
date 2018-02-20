@@ -4,19 +4,26 @@
 \alias{testTIP}
 \title{Test for TIP dominance}
 \usage{
-testTIP(dataset1, dataset2, pz = 0.6, same.arpt.value = NULL,
-  norm = FALSE, samplesize = 50)
+testTIP(dataset1, dataset2, ipuc = "ipuc", hhcsw = "DB090",
+  hhsize = "HX040", pz = 0.6, same.arpt.value = NULL, norm = FALSE,
+  samplesize = 50)
 }
 \arguments{
-\item{dataset1}{a data.frame containing variables obtained by using the setupDataset function.}
+\item{dataset1}{a data.frame containing the variables.}
 
-\item{dataset2}{a data.frame containing variables obtained by using the setupDataset function.}
+\item{dataset2}{a data.frame containing the variables.}
+
+\item{ipuc}{a character string indicating the variable name of the income per unit of consumption. Default is "ipuc".}
+
+\item{hhcsw}{a character string indicating the variable name of the household cross-sectional weight. Default is "DB090".}
+
+\item{hhsize}{a character string indicating the variable name of the household size. Default is "HX040".}
 
 \item{pz}{a number between 0 and 1 which represents the percentage to be used to calculate the at-risk-of-poverty threshold. The default is 0.6.}
 
 \item{same.arpt.value}{a number that will be used as a common poverty threshold. If NULL, poverty thresholds will be calculated from each datasets (see arpt).}
 
-\item{norm}{logical; if  TRUE, the normalized TIP curve ordinates are computed using the normalized poverty gaps (poverty gaps divided by the poverty threshold).}
+\item{norm}{logical; if  TRUE, the normalised TIP curve ordinates are computed using the normalised poverty gaps (poverty gaps divided by the poverty threshold).}
 
 \item{samplesize}{an integer which represents the number of TIP curve ordinates to be estimated. The default is 50.}
 }
@@ -38,18 +45,15 @@ TIP curve estimates.
 \details{
 Because the TIP curve becomes horizontal at the arpr value, it is only necessary to have the test implemented over the interval \eqn{(0, \max \{ arpr1, arpr2 \})}{(0, max {arpr1, arpr2})}. For that reason both TIP curves are truncated at the same value equal to \eqn{\max \{ arpr1, arpr2 \} }{max{arpr1, arpr2}} and ordinates are only compared at points \eqn{p_i = i/samplesize}{p_i = i/samplesize}, where \eqn{i=1, \dots, k} in the interval \eqn{(0, \max \{ arpr1, arpr2 \})}{(0, max { arpr1, arpr2})} (see \code{arpr} function).
 
-The null hypotesis to be tested is that the TIP curve calculated from dataset1 dominates the one calculated from dataset2.
+The null hypothesis to be tested is that the TIP curve calculated from dataset1 dominates the one calculated from dataset2.
 }
 \examples{
 data(eusilc2)
 ATdataset <- setupDataset(eusilc2, country = "AT")
 ATdataset1 <- setupDataset(eusilc2, country = "AT", region = "Burgenland")
 ATdataset2 <- setupDataset(eusilc2, country = "AT", region = "Carinthia")
-testTIP(ATdataset1, ATdataset, same.arpt.value = arpt(ATdataset))
+testTIP(ATdataset1, ATdataset2, same.arpt.value = arpt(ATdataset))
 
-}
-\author{
-A. Berihuete, C.D. Ramos and M.A. Sordo
 }
 \references{
 C. M. Beach and S. F. Kaliski (1986) Curve inference with sample weights: and application to the distribution of unemployment experience, Journal of the Royal Statistical Society. Series C (Applied Statistics), Vol. 35, No. 1, 38--45.
@@ -63,4 +67,6 @@ K. Xu and L. Osberg (1998) A distribution-free test for deprivation dominance, E
 \seealso{
 OmegaTIP, setupDataset, arpt, arpr
 }
-
+\author{
+A. Berihuete, C.D. Ramos and M.A. Sordo
+}

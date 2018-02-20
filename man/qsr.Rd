@@ -4,16 +4,23 @@
 \alias{qsr}
 \title{Income quintile share ratio}
 \usage{
-qsr(dataset, ci = FALSE, rep = 1000, verbose = FALSE)
+qsr(dataset, ipuc = "ipuc", hhcsw = "DB090", hhsize = "HX040",
+  ci = NULL, rep = 1000, verbose = FALSE)
 }
 \arguments{
-\item{dataset}{a data.frame containing variables obtained by using the setupDataset function.}
+\item{dataset}{a data.frame containing the variables.}
 
-\item{ci}{logical; if  TRUE, 95 percent confidence interval is given for the quintile share ratio.}
+\item{ipuc}{a character string indicating the variable name of the income per unit of consumption. Default is "ipuc".}
+
+\item{hhcsw}{a character string indicating the variable name of the household cross-sectional weight. Default is "DB090".}
+
+\item{hhsize}{a character string indicating the variable name of the household size. Default is "HX040".}
+
+\item{ci}{a scalar or vector containing the confidence level(s) of the required interval(s). Default does not calculate the confidence interval.}
 
 \item{rep}{a number to do the confidence interval using boostrap technique.}
 
-\item{verbose}{logical; if TRUE the confindence interval is plotted.}
+\item{verbose}{logical; if TRUE the confidence interval is plotted.}
 }
 \value{
 The value of the income quintile share ratio.
@@ -22,16 +29,13 @@ The value of the income quintile share ratio.
 Estimates the  quintile share ratio of an income distribution. It is defined as the ratio of total income  received by the 20 percent of the population with the highest income to that received by the 20 percent of the population with the lowest income.
 }
 \details{
-It is calculated using the equivalized disposable income. Two types of equivalence scales can be used, the modified OECD scale and the parametric scale of Buhmann et al. ( 1988). The default is the modified OECD scale  (see setupDataset).
+It is calculated using the equivalised disposable income. Two types of equivalence scales can be used, the modified OECD scale and the parametric scale of Buhmann et al. ( 1988). The default is the modified OECD scale  (see setupDataset).
 }
 \examples{
 data(eusilc2)
-ATdataset <- setupDataset(eusilc2, country = "AT", s = "OECD")
+ATdataset <- setupDataset(eusilc2, country = "AT")
 qsr(ATdataset)
 
-}
-\author{
-A. Berihuete, C.D. Ramos and M.A. Sordo
 }
 \references{
 B. Buhmann et al. (1988) Equivalence scales, well-being, inequality and poverty: sensitivity estimates across ten countries using the Luxembourg Income Study (LIS) database, Review of Income and Wealth, 34, 115--142.
@@ -41,4 +45,6 @@ B. Buhmann et al. (1988) Equivalence scales, well-being, inequality and poverty:
 \seealso{
 setupDataset
 }
-
+\author{
+A. Berihuete, C.D. Ramos and M.A. Sordo
+}

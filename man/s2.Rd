@@ -4,21 +4,28 @@
 \alias{s2}
 \title{Twice the area under the TIP curve}
 \usage{
-s2(dataset, arpt.value, norm = FALSE, ci = FALSE, rep = 1000,
+s2(dataset, ipuc = "ipuc", hhcsw = "DB090", hhsize = "HX040",
+  arpt.value = NULL, norm = FALSE, ci = NULL, rep = 1000,
   verbose = FALSE)
 }
 \arguments{
-\item{dataset}{a data.frame containing variables obtained by using the setupDataset function.}
+\item{dataset}{a data.frame containing the variables.}
 
-\item{arpt.value}{the at-risk-of-poverty threshold to be used  (see arpt).}
+\item{ipuc}{a character string indicating the variable name of the income per unit of consumption. Default is "ipuc".}
 
-\item{norm}{logical; if  TRUE, the area under the normalized TIP curve is then estimated (see tip).}
+\item{hhcsw}{a character string indicating the variable name of the household cross-sectional weight. Default is "DB090".}
 
-\item{ci}{logical; if  TRUE, 95 percent confidence interval is given for this area.}
+\item{hhsize}{a character string indicating the variable name of the household size. Default is "HX040".}
+
+\item{arpt.value}{the at-risk-of-poverty threshold to be used  (see arpt). Default is NULL which calculates arpt with default parameters.}
+
+\item{norm}{logical; if  TRUE, the area under the normalised TIP curve is then estimated (see tip).}
+
+\item{ci}{a scalar or vector containing the confidence level(s) of the required interval(s). Default does not calculate the confidence interval.}
 
 \item{rep}{a number to do the confidence interval using boostrap technique.}
 
-\item{verbose}{logical; if TRUE the confindence interval is plotted.}
+\item{verbose}{logical; if TRUE the confidence interval is plotted.}
 }
 \value{
 The value of the poverty measure.
@@ -27,22 +34,19 @@ The value of the poverty measure.
 Estimates the poverty measure which is twice the area under the TIP curve.
 }
 \details{
-It is computed using the equivalized disposable income. The equivalence scales that can be employed are the modified OECD scale or the parametric scale of Buhmann et al. (1988). The default is the modified OECD scale (see setupDataset).
+It is computed using the equivalised disposable income. The equivalence scales that can be employed are the modified OECD scale or the parametric scale of Buhmann et al. (1988). The default is the modified OECD scale (see setupDataset).
 
 This poverty index coincides with the Sen-Shorrocks-Thon index and the S(2,z) index of Sordo and Ramos (2011).
 }
 \examples{
 data(eusilc2)
-ATdataset <- setupDataset(eusilc2, country = "AT", s = "OECD")
+ATdataset <- setupDataset(eusilc2, country = "AT")
 s2(ATdataset,arpt.value = arpt(ATdataset), norm = TRUE)
-}
-\author{
-A. Berihuete, C.D. Ramos and M.A. Sordo
 }
 \references{
 B. Buhmann et al. (1988) Equivalence scales, well-being, inequality and poverty: sensitivity estimates across ten countries using the Luxembourg Income Study (LIS) database, Review of Income and Wealth, 34, 115--142.
 
-A.F. Shorrocs (1995) Revisiting the Sen poverty index, Econometrica, 63, 1225--1230.
+A.F. Shorrocks (1995) Revisiting the Sen poverty index, Econometrica, 63, 1225--1230.
 
 D. Thon (1979) On measuring poverty, Review of Income and Wealth, 25, 429--439.
 
@@ -53,4 +57,6 @@ M.A. Sordo and C.D. Ramos (2011) Poverty comparisons when TIP curves intersect, 
 \seealso{
 tip, setupDataset, arpt
 }
-
+\author{
+A. Berihuete, C.D. Ramos and M.A. Sordo
+}

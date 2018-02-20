@@ -4,14 +4,23 @@
 \alias{tip}
 \title{TIP curve}
 \usage{
-tip(dataset, arpt.value, norm = FALSE, plot = FALSE)
+tip(dataset, ipuc = "ipuc", hhcsw = "DB090", hhsize = "HX040",
+  arpt.value = NULL, samplesize = 50, norm = FALSE, plot = FALSE)
 }
 \arguments{
-\item{dataset}{a data.frame containing variables obtained by using the setupDataset function.}
+\item{dataset}{a data.frame containing the variables.}
 
-\item{arpt.value}{the at-risk-of-poverty threshold to be used  (see arpt).}
+\item{ipuc}{a character string indicating the variable name of the income per unit of consumption. Default is "ipuc".}
 
-\item{norm}{logical; if  TRUE, the normalized TIP curve ordinates are computed using the normalized poverty gaps (poverty gaps divided by the poverty threshold).}
+\item{hhcsw}{a character string indicating the variable name of the household cross-sectional weight. Default is "DB090".}
+
+\item{hhsize}{a character string indicating the variable name of the household size. Default is "HX040".}
+
+\item{arpt.value}{the at-risk-of-poverty threshold to be used  (see arpt). Default is NULL which calculates arpt with default parameters.}
+
+\item{samplesize}{an integer which specifies the number of (equally spaced) percentiles to be used in the estimation of the TIP ordinates The default is 50. If samplesize is set to ''complete'', ordinates are computed in each value along the whole distribution.}
+
+\item{norm}{logical; if  TRUE, the normalised TIP curve ordinates are computed using the normalised poverty gaps (poverty gaps divided by the poverty threshold).}
 
 \item{plot}{logical; if TRUE plots the TIP curve.}
 }
@@ -26,16 +35,13 @@ y.tip vector with values of tip curve ordinates.
 Estimates TIP curve ordinates. The TIP curve is defined by plotting the cumulated proportion of population on the x-axis and the cumulated per capita poverty gap (the distance between each income and the poverty threshold) on the y-axis from the biggest one downwards.
 }
 \details{
-The TIP (Three I's of Poverty) curve ordinates are computed using the equivalized disposable income. The equivalence scales that can be employed are the modified OECD scale or the parametric scale of Buhmann et al. (1988). The default is the modified OECD scale (see setupDataset).
+The TIP (Three I's of Poverty) curve ordinates are computed using the equivalised disposable income. The equivalence scales that can be employed are the modified OECD scale or the parametric scale of Buhmann et al. (1988). The default is the modified OECD scale (see setupDataset).
 }
 \examples{
 data(eusilc2)
-ATdataset <- setupDataset(eusilc2, country = "AT", s = "OECD")
-tip.curve <- tip(ATdataset,arpt.value = arpt(ATdataset), norm = TRUE)
+ATdataset <- setupDataset(eusilc2, country = "AT")
+tip.curve <- tip(ATdataset, arpt.value = arpt(ATdataset), norm = TRUE)
 str(tip.curve)
-}
-\author{
-A. Berihuete, C.D. Ramos and M.A. Sordo
 }
 \references{
 B. Buhmann et al. (1988) Equivalence scales, well-being, inequality and poverty: sensitivity estimates across ten countries using the Luxembourg Income Study (LIS) database, Review of Income and Wealth, 34, 115--142.
@@ -45,4 +51,6 @@ S.P. Jenkins and P.J. Lambert (1997) Three I's of poverty curves, with an analys
 \seealso{
 setupDataset, arpt
 }
-
+\author{
+A. Berihuete, C.D. Ramos and M.A. Sordo
+}

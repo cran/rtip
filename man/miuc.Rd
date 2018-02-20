@@ -4,34 +4,38 @@
 \alias{miuc}
 \title{Mean income per unit of consumption}
 \usage{
-miuc(dataset, ci = FALSE, rep = 1000, verbose = FALSE)
+miuc(dataset, ipuc = "ipuc", hhcsw = "DB090", hhsize = "HX040",
+  ci = NULL, rep = 1000, verbose = FALSE)
 }
 \arguments{
-\item{dataset}{a data.frame containing variables obtained by using the setupDataset function.}
+\item{dataset}{a data.frame containing the variables.}
 
-\item{ci}{logical; if  TRUE, 95 percent confidence interval is given for the mean income per unit of consumption.}
+\item{ipuc}{a character string indicating the variable name of the income per unit of consumption. Default is "ipuc".}
+
+\item{hhcsw}{a character string indicating the variable name of the household cross-sectional weight. Default is "DB090".}
+
+\item{hhsize}{a character string indicating the variable name of the household size. Default is "HX040".}
+
+\item{ci}{a scalar or vector containing the confidence level(s) of the required interval(s). Default does not calculate the confidence interval.}
 
 \item{rep}{a number to make the confidence interval using boostrap technique.}
 
-\item{verbose}{logical; if TRUE the confindence interval is plotted.}
+\item{verbose}{logical; if TRUE the confidence interval is plotted.}
 }
 \value{
 The value of mean income per unit of consumption
 }
 \description{
-Estimates the mean income per unit of consumption which is the mean of the equivalized disposable income.
+Estimates the mean income per unit of consumption which is the mean of the equivalised disposable income.
 }
 \details{
-The equivalized disposable income is calculated using the standar equivalence scale (called the modified OECD scale) recommended by Eurostat. The parametric scale of Buhmann et al. (1988) can also be used. The default is the modified OECD scale (see setupDataset).
+The equivalised disposable income is calculated using the standard equivalence scale (called the modified OECD scale) recommended by Eurostat. The parametric scale of Buhmann et al. (1988) can also be used. The default is the modified OECD scale (see setupDataset).
 }
 \examples{
 data(eusilc2)
-ATdataset <- setupDataset(eusilc2, country = "AT", s = "OECD")
+ATdataset <- setupDataset(eusilc2, country = "AT")
 miuc(ATdataset)
 
-}
-\author{
-A. Berihuete, C.D. Ramos and M.A. Sordo
 }
 \references{
 B. Buhmann et al. (1988) Equivalence scales, well-being, inequality and poverty: sensitivity estimates across ten countries using the Luxembourg Income Study (LIS) database, Review of Income and Wealth, 34, 115--142.
@@ -41,4 +45,6 @@ B. Buhmann et al. (1988) Equivalence scales, well-being, inequality and poverty:
 \seealso{
 setupDataset.
 }
-
+\author{
+A. Berihuete, C.D. Ramos and M.A. Sordo
+}

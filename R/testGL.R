@@ -5,13 +5,16 @@
 #' @description Statistical test procedure given by Xu (1997) to study Generalized Lorenz dominance from sample Generalized Lorenz curve estimates.  Lorenz dominance from sample Lorenz curve estimates can also be studied (Beach and Kaliski, 1986).
 #'
 #'
-#' @param dataset1 a data.frame containing variables obtained by using  the setupDataset function.
-#' @param dataset2 a data.frame containing variables obtained by using  the setupDataset function.
+#' @param dataset1 a data.frame containing the variables.
+#' @param dataset2 a data.frame containing the variables.
+#' @param ipuc a character string indicating the variable name of the income per unit of consumption. Default is "ipuc".
+#' @param hhcsw a character string indicating the variable name of the household cross-sectional weight. Default is "DB090".
+#' @param hhsize a character string indicating the variable name of the household size. Default is "HX040".
 #' @param generalized logical; if FALSE the test will be applied to compare two Lorenz curves. Otherwise Generalized Lorenz curves will be compared.
 #' @param samplesize an integer which represents the number of Lorenz (Generalized Lorenz) curve ordinates to be estimated for comparison. The default is 10.
 #'
 #'
-#' @details The null hypotesis to be tested is that the  Lorenz (Generalized Lorenz) curve calculated from dataset1 dominates the one calculated from dataset2.
+#' @details The null hypothesis to be tested is that the  Lorenz (Generalized Lorenz) curve calculated from dataset1 dominates the one calculated from dataset2.
 #'
 #'
 #' @return A list with the following components:
@@ -41,10 +44,23 @@
 #' @export
 
 
-testGL <- function(dataset1, dataset2, generalized = TRUE, samplesize = 10){
+testGL <- function(dataset1, dataset2,
+                   ipuc = "ipuc", # The income per unit of consumption
+                   hhcsw = "DB090", # Household cross-sectional weight
+                   hhsize = "HX040", # Household size
+                   generalized = TRUE, samplesize = 10){
 
-  list1 <- OmegaGL(dataset1, samp = samplesize, generalized)
-  list2 <- OmegaGL(dataset2, samp = samplesize, generalized)
+  list1 <- OmegaGL(dataset1,
+                   ipuc = ipuc, # The income per unit of consumption
+                   hhcsw = hhcsw, # Household cross-sectional weight
+                   hhsize = hhsize, # Household size
+                   samplesize = samplesize, generalized = generalized)
+
+  list2 <- OmegaGL(dataset2,
+                   ipuc = ipuc, # The income per unit of consumption
+                   hhcsw = hhcsw, # Household cross-sectional weight
+                   hhsize = hhsize, # Household size
+                   samplesize = samplesize, generalized = generalized)
 
   if(!generalized){
     estim.gl <- list1$gl.curve[-samplesize] - list2$gl.curve[-samplesize]
@@ -96,7 +112,7 @@ testGL <- function(dataset1, dataset2, generalized = TRUE, samplesize = 10){
                 p.value = p.value,
                 decision = "Reject null hypothesis"))
   }else{
-    print("Inconclusive region ... calculating p-value (10000 simulations)")
+    print("Inconclusive region... calculating p-value (10000 simulations)")
     vec.solved <- matrix(NA, 1000, length(estim.gl))
     i <- 1
     iterations <- 1

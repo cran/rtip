@@ -5,16 +5,19 @@
 #' @description Statistical test procedure given by Xu and Osberg (1998) to study TIP dominance from sample
 #' TIP curve estimates.
 #'
-#' @param dataset1 a data.frame containing variables obtained by using the setupDataset function.
-#' @param dataset2 a data.frame containing variables obtained by using the setupDataset function.
+#' @param dataset1 a data.frame containing the variables.
+#' @param dataset2 a data.frame containing the variables.
+#' @param ipuc a character string indicating the variable name of the income per unit of consumption. Default is "ipuc".
+#' @param hhcsw a character string indicating the variable name of the household cross-sectional weight. Default is "DB090".
+#' @param hhsize a character string indicating the variable name of the household size. Default is "HX040".
 #' @param pz a number between 0 and 1 which represents the percentage to be used to calculate the at-risk-of-poverty threshold. The default is 0.6.
 #' @param same.arpt.value a number that will be used as a common poverty threshold. If NULL, poverty thresholds will be calculated from each datasets (see arpt).
-#' @param norm logical; if  TRUE, the normalized TIP curve ordinates are computed using the normalized poverty gaps (poverty gaps divided by the poverty threshold).
+#' @param norm logical; if  TRUE, the normalised TIP curve ordinates are computed using the normalised poverty gaps (poverty gaps divided by the poverty threshold).
 #' @param samplesize an integer which represents the number of TIP curve ordinates to be estimated. The default is 50.
 #'
 #' @details Because the TIP curve becomes horizontal at the arpr value, it is only necessary to have the test implemented over the interval \eqn{(0, \max \{ arpr1, arpr2 \})}{(0, max {arpr1, arpr2})}. For that reason both TIP curves are truncated at the same value equal to \eqn{\max \{ arpr1, arpr2 \} }{max{arpr1, arpr2}} and ordinates are only compared at points \eqn{p_i = i/samplesize}{p_i = i/samplesize}, where \eqn{i=1, \dots, k} in the interval \eqn{(0, \max \{ arpr1, arpr2 \})}{(0, max { arpr1, arpr2})} (see \code{arpr} function).
 #'
-#' The null hypotesis to be tested is that the TIP curve calculated from dataset1 dominates the one calculated from dataset2.
+#' The null hypothesis to be tested is that the TIP curve calculated from dataset1 dominates the one calculated from dataset2.
 #'
 #' @return A list with the following components:
 #' \itemize{
@@ -37,29 +40,50 @@
 #' ATdataset <- setupDataset(eusilc2, country = "AT")
 #' ATdataset1 <- setupDataset(eusilc2, country = "AT", region = "Burgenland")
 #' ATdataset2 <- setupDataset(eusilc2, country = "AT", region = "Carinthia")
-#' testTIP(ATdataset1, ATdataset, same.arpt.value = arpt(ATdataset))
+#' testTIP(ATdataset1, ATdataset2, same.arpt.value = arpt(ATdataset))
 #'
 #' @import plyr
 #' @import mvtnorm
 #' @export
 
-testTIP <- function(dataset1, dataset2, pz = 0.6,
+testTIP <- function(dataset1, dataset2,
+                    ipuc = "ipuc", # The income per unit of consumption
+                    hhcsw = "DB090", # Household cross-sectional weight
+                    hhsize = "HX040", # Household size
+                    pz = 0.6,
                     same.arpt.value = NULL,
                     norm = FALSE, samplesize = 50){
 
   if(is.null(same.arpt.value)){
-    arpt.value1 <- arpt(dataset1, pz = pz)
-    arpt.value2 <- arpt(dataset2, pz = pz)
+
+    arpt.value1 <- arpt(dataset1,
+                        ipuc = ipuc, # The income per unit of consumption
+                        hhcsw = hhcsw, # Household cross-sectional weight
+                        hhsize = hhsize, # Household size
+                        pz = pz)
+
+    arpt.value2 <- arpt(dataset2,
+                        ipuc = ipuc, # The income per unit of consumption
+                        hhcsw = hhcsw, # Household cross-sectional weight
+                        hhsize = hhsize, # Household size
+                        pz = pz)
   }else{
     arpt.value1 <- arpt.value2 <- same.arpt.value
   }
 
-  list1 <- OmegaTIP(dataset1, arpt.value1,
-                    norm = norm,
-                    samp = samplesize)
-  list2 <- OmegaTIP(dataset2, arpt.value2,
-                    norm = norm,
-                    samp = samplesize)
+  list1 <- OmegaTIP(dataset1,
+                    ipuc = ipuc, # The income per unit of consumption
+                    hhcsw = hhcsw, # Household cross-sectional weight
+                    hhsize = hhsize, # Household size
+                    arpt.value = arpt.value1,
+                    samplesize = samplesize, norm = norm)
+
+  list2 <- OmegaTIP(dataset2,
+                    ipuc = ipuc, # The income per unit of consumption
+                    hhcsw = hhcsw, # Household cross-sectional weight
+                    hhsize = hhsize, # Household size
+                    arpt.value = arpt.value2,
+                    samplesize = samplesize, norm = norm)
 
   phi1 <- list1$tip.curve
   phi2 <- list2$tip.curve
@@ -123,7 +147,7 @@ testTIP <- function(dataset1, dataset2, pz = 0.6,
                 p.value = p.value,
                 decision = "Reject null hypothesis"))
   }else{
-    print("Inconclusive region ... calculating p-value (10000 simulations)")
+    print("Inconclusive region... calculating p-value (10000 simulations)")
     vec.solved <- matrix(NA, 1000, threshold)
     i <- 1
     iterations <- 1

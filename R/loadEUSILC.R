@@ -9,7 +9,7 @@
 #' @param eusilc_d_file a string with the filename of \code{D}-file.
 #' @param eusilc_h_file a string with the filename of \code{H}-file.
 #'
-#' @details Vector strings \code{varD} and \code{varH} contains the names of the
+#' @details Vector strings \code{varD} and \code{varH} contain the names of the
 #' variables needed to do the calculations with rtip package. These variables are given
 #' by Eurostat in two different files, namely basic household register
 #' (\code{H}-file) and household data (\code{D}-file).
@@ -29,7 +29,7 @@ loadEUSILC <- function(eusilc_d_file, eusilc_h_file){
   dataset2 <- read.table(eusilc_h_file, header=TRUE, sep= ",")
 
   # selecting same ID homes
-  check1 <- identical(dataset1$DB010, dataset2$HB010) # check if you've the same identification for homes
+  check1 <- identical(dataset1$DB010, dataset2$HB010) # check if you've the same identification for years
   check2 <- identical(dataset1$DB030, dataset2$HB030) # check if you've the same identification for homes
   if(!check1){
     stop('Different years!')

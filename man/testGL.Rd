@@ -4,12 +4,19 @@
 \alias{testGL}
 \title{Test for Lorenz and Generalized Lorenz dominance}
 \usage{
-testGL(dataset1, dataset2, generalized = TRUE, samplesize = 10)
+testGL(dataset1, dataset2, ipuc = "ipuc", hhcsw = "DB090",
+  hhsize = "HX040", generalized = TRUE, samplesize = 10)
 }
 \arguments{
-\item{dataset1}{a data.frame containing variables obtained by using  the setupDataset function.}
+\item{dataset1}{a data.frame containing the variables.}
 
-\item{dataset2}{a data.frame containing variables obtained by using  the setupDataset function.}
+\item{dataset2}{a data.frame containing the variables.}
+
+\item{ipuc}{a character string indicating the variable name of the income per unit of consumption. Default is "ipuc".}
+
+\item{hhcsw}{a character string indicating the variable name of the household cross-sectional weight. Default is "DB090".}
+
+\item{hhsize}{a character string indicating the variable name of the household size. Default is "HX040".}
 
 \item{generalized}{logical; if FALSE the test will be applied to compare two Lorenz curves. Otherwise Generalized Lorenz curves will be compared.}
 
@@ -28,7 +35,7 @@ A list with the following components:
 Statistical test procedure given by Xu (1997) to study Generalized Lorenz dominance from sample Generalized Lorenz curve estimates.  Lorenz dominance from sample Lorenz curve estimates can also be studied (Beach and Kaliski, 1986).
 }
 \details{
-The null hypotesis to be tested is that the  Lorenz (Generalized Lorenz) curve calculated from dataset1 dominates the one calculated from dataset2.
+The null hypothesis to be tested is that the  Lorenz (Generalized Lorenz) curve calculated from dataset1 dominates the one calculated from dataset2.
 }
 \examples{
 data(eusilc2)
@@ -36,9 +43,6 @@ ATdataset1 <- setupDataset(eusilc2, country = "AT", region = "Burgenland")
 ATdataset2 <- setupDataset(eusilc2, country = "AT", region = "Carinthia")
 testGL(ATdataset1, ATdataset2, generalized = TRUE, samplesize = 10)
 
-}
-\author{
-A. Berihuete, C.D. Ramos and M.A. Sordo
 }
 \references{
 C. M. Beach and R. Davidson (1983) Distribution-free statistical inference with Lorenz curves
@@ -54,4 +58,6 @@ K. Xu (1997) Asymptotically distribution-free statistical test for generalized L
 \seealso{
 OmegaGL, setupDataset
 }
-
+\author{
+A. Berihuete, C.D. Ramos and M.A. Sordo
+}

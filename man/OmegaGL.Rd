@@ -4,13 +4,20 @@
 \alias{OmegaGL}
 \title{Matrix for testing Generalized Lorenz dominance}
 \usage{
-OmegaGL(dataset, samp, generalized = TRUE)
+OmegaGL(dataset, ipuc = "ipuc", hhcsw = "DB090", hhsize = "HX040",
+  samplesize = 10, generalized = TRUE)
 }
 \arguments{
-\item{dataset}{a data.frame containing variables obtained by using the setupDataset function.}
+\item{dataset}{a data.frame containing the variables.}
 
-\item{samp}{An interger representing the number of GL ordinates to be estimated.
-These ordinates are estimated at points \eqn{p_i}, where \eqn{p_i=i/samp, \quad i=1, \dots, samp}.}
+\item{ipuc}{a character string indicating the variable name of the income per unit of consumption. Default is "ipuc".}
+
+\item{hhcsw}{a character string indicating the variable name of the household cross-sectional weight. Default is "DB090".}
+
+\item{hhsize}{a character string indicating the variable name of the household size. Default is "HX040".}
+
+\item{samplesize}{An integer representing the number of GL ordinates to be estimated. Default is 10.
+These ordinates are estimated at points \eqn{p_i}, where \eqn{p_i=i/samplesize, \quad i=1, \dots, samplesize}.}
 
 \item{generalized}{logical; if FALSE the matrix for testing Lorenz dominance will be calculated.}
 }
@@ -19,9 +26,9 @@ A list with the following components:
 \itemize{
 \item Omega, covariance matrix for the estimated vector of GL curve ordinates.
 \item gl.curve, estimated vector of GL curve ordinates.
-\item p, vector with components \eqn{p_i=i/samp, \quad i=1, ..., samp}.
+\item p, vector with components \eqn{p_i=i/samplesize, \quad i=1,..., samplesize}.
 \item quantiles, estimated vector of quantiles of income corresponding to these \eqn{p_i}.
-\item gamma, vector of estimated conditional means of income less than the quantil corresponding to \eqn{p_i=i/samp, \quad i=1, \dots,  samp}.
+\item gamma, vector of estimated conditional means of income less than the quantile corresponding to \eqn{p_i=i/samplesize, \quad i=1, \dots,  samplesize}.
 }
 }
 \description{
@@ -32,12 +39,9 @@ null hypothesis that one distribution dominates the other in the Generalized
 Lorenz sense.
 }
 \details{
-Estimation of GL curve ordinates and their covariance matrix are calculated following Beach and Davidson (1983) and Beach and Kalisiki (1986).
+Estimation of GL curve ordinates and their covariance matrix are calculated following Beach and Davidson (1983) and Beach and Kaliski (1986).
 
-Calculations are made using the equivalized disposable income. The equivalence scales that can be employed are the modified OECD scale or the parametric scale of Buhmann et al. (1988). The default is the modified OECD scale (see setupDataset).
-}
-\author{
-A. Berihuete, C.D. Ramos and M.A. Sordo
+Calculations are made using the equivalised disposable income. The equivalence scales that can be employed are the modified OECD scale or the parametric scale of Buhmann et al. (1988). The default is the modified OECD scale (see setupDataset).
 }
 \references{
 C. M. Beach and R. Davidson (1983) Distribution-free statistical inference with Lorenz curves and income shares, Review of Economic Studies, 50, 723--735.
@@ -51,4 +55,6 @@ K. Xu (1997) Asymptotically distribution-free statistical test for generalized L
 \seealso{
 testGL, setupDataset
 }
-
+\author{
+A. Berihuete, C.D. Ramos and M.A. Sordo
+}

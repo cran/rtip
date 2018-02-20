@@ -2,42 +2,46 @@
 % Please edit documentation in R/s1.R
 \name{s1}
 \alias{s1}
-\title{Maximun of TIP curve}
+\title{Maximum of TIP curve}
 \usage{
-s1(dataset, arpt.value, norm = FALSE, ci = FALSE, rep = 1000,
+s1(dataset, ipuc = "ipuc", hhcsw = "DB090", hhsize = "HX040",
+  arpt.value = NULL, norm = FALSE, ci = NULL, rep = 1000,
   verbose = FALSE)
 }
 \arguments{
-\item{dataset}{a data.frame containing variables obtained by using the setupDataset function.}
+\item{dataset}{a data.frame containing the variables.}
 
-\item{arpt.value}{the at-risk-of-poverty threshold to be used  (see arpt).}
+\item{ipuc}{a character string indicating the variable name of the income per unit of consumption. Default is "ipuc".}
 
-\item{norm}{logical; if  TRUE, the normalized mean poverty gap index is calculated which adds up the extent to which individuals on average fall below the poverty threshold, and expresses it as a percentage of the poverty threshold.}
+\item{hhcsw}{a character string indicating the variable name of the household cross-sectional weight. Default is "DB090".}
 
-\item{ci}{logical; if  TRUE, 95 percent confidence interval is given for the mean poverty gap (or the normalized mean poverty gap index).}
+\item{hhsize}{a character string indicating the variable name of the household size. Default is "HX040".}
+
+\item{arpt.value}{the at-risk-of-poverty threshold to be used  (see arpt). Default is NULL which calculates arpt with default parameters.}
+
+\item{norm}{logical; if  TRUE, the normalised mean poverty gap index is calculated which adds up the extent to which individuals on average fall below the poverty threshold, and expresses it as a percentage of the poverty threshold.}
+
+\item{ci}{a scalar or vector containing the confidence level(s) of the required interval(s). Default does not calculate the confidence interval.}
 
 \item{rep}{a number to do the confidence interval using boostrap technique.}
 
-\item{verbose}{logical; if TRUE the confindence interval is plotted.}
+\item{verbose}{logical; if TRUE the confidence interval is plotted.}
 }
 \value{
 The value of the poverty measure.
 }
 \description{
-Estimates the highest point of the TIP curve which is a measure of the intensity of poverty. It is equal to the mean poverty gap (difference between the poverty threshold and the equivalized disposable income).
+Estimates the highest point of the TIP curve which is a measure of the intensity of poverty. It is equal to the mean poverty gap (difference between the poverty threshold and the equivalised disposable income).
 }
 \details{
-It is computed using the equivalized disposable income. The equivalence scales that can be employed are the modified OECD scale or the parametric scale of Buhmann et al. (1988). The default is the modified OECD scale (see setupDataset).
+It is computed using the equivalised disposable income. The equivalence scales that can be employed are the modified OECD scale or the parametric scale of Buhmann et al. (1988). The default is the modified OECD scale (see setupDataset).
 
-The normalized mean poverty gap index, also named FGT(1), is a particular case of the family of poverty indexes proposed by Foster, Greer and Thorbecke (1984).
+The normalised mean poverty gap index, also named FGT(1), is a particular case of the family of poverty indexes proposed by Foster, Greer and Thorbecke (1984).
 }
 \examples{
 data(eusilc2)
-ATdataset <- setupDataset(eusilc2, country = "AT", , s = "OECD")
+ATdataset <- setupDataset(eusilc2, country = "AT")
 s1(ATdataset,arpt.value = arpt(ATdataset), norm = TRUE)
-}
-\author{
-A. Berihuete, C.D. Ramos and M.A. Sordo
 }
 \references{
 B. Buhmann et al. (1988) Equivalence scales, well-being, inequality and poverty: sensitivity estimates across ten countries using the Luxembourg Income Study (LIS) database, Review of Income and Wealth, 34, 115--142.
@@ -49,4 +53,6 @@ M.A. Sordo and C.D. Ramos (2011) Poverty comparisons when TIP curves intersect, 
 \seealso{
 tip, setupDataset, arpt
 }
-
+\author{
+A. Berihuete, C.D. Ramos and M.A. Sordo
+}

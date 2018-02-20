@@ -2,15 +2,18 @@
 #'
 #' @author A. Berihuete, C.D. Ramos and M.A. Sordo
 #'
-#' @description Estimates the at-risk-of-poverty threshold which is set at 60 percent of the median equivalized disposable income using the standard definition.
+#' @description Estimates the at-risk-of-poverty threshold which is set at 60 percent of the median equivalised disposable income using the standard definition.
 #'
-#' @param dataset a data.frame containing variables obtained by using the setupDataset function.
+#' @param dataset a data.frame containing the variables.
+#' @param ipuc a character string indicating the variable name of the income per unit of consumption. Default is "ipuc".
+#' @param hhcsw a character string indicating the variable name of the household cross-sectional weight. Default is "DB090".
+#' @param hhsize a character string indicating the variable name of the household size. Default is "HX040".
 #' @param pz a number between 0 and 1 which represents the percentage to be used to calculate the at-risk-of-poverty threshold. The default is 0.6.
-#' @param ci logical; if  TRUE, 95 percent confidence interval is given for the at-risk-of-poverty threshold.
+#' @param ci a scalar or vector containing the confidence level(s) of the required interval(s). Default does not calculate the confidence interval.
 #' @param rep a number to do the confidence interval using boostrap technique.
-#' @param verbose logical; if TRUE the confindence interval is plotted.
+#' @param verbose logical; if TRUE the confidence interval is plotted.
 #'
-#' @details The equivalized disposable income is calculated using the standar equivalence scale (called the modified OECD scale) recommended by Eurostat. The parametric scale of Buhmann et al.(1988) can also be used. The default is the modified OECD scale  (see setupDataset).
+#' @details The equivalised disposable income is calculated using the standard equivalence scale (called the modified OECD scale) recommended by Eurostat. The parametric scale of Buhmann et al.(1988) can also be used. The default is the modified OECD scale  (see setupDataset).
 #'
 #' @return The value of the at-risk-of-poverty threshold.
 #'
@@ -21,17 +24,20 @@
 #'
 #' @examples
 #' data(eusilc2)
-#' ATdataset <- setupDataset(eusilc2, country = "AT", s = "OECD")
+#' ATdataset <- setupDataset(eusilc2, country = "AT")
 #' arpt(ATdataset)
 #' @import boot
 #' @export
 
+arpt <- function(dataset,
+                 ipuc = "ipuc", # The income per unit of consumption
+                 hhcsw = "DB090", # Household cross-sectional weight
+                 hhsize = "HX040", # Household size
+                 pz = 0.6, ci = NULL, rep = 500, verbose = FALSE){
 
-arpt <- function(dataset, pz = 0.6, ci = FALSE, rep = 500, verbose = FALSE){
-
-
-  if(ci == FALSE){
-    dataset <- dataset[order(dataset[,"ipuc"]), ]
+  dataset <- dataset[order(dataset[,"ipuc"]), ]
+  dataset$wHX040 <- dataset[,hhcsw]*dataset[,hhsize] # household weights taking into account the size of the household
+  if(is.null(ci)){
     dataset$acum.wHX040 <- cumsum(dataset$wHX040)
     dataset$abscisa2 <-
       dataset$acum.wHX040/dataset$acum.wHX040[length(dataset$acum.wHX040)]
@@ -39,10 +45,15 @@ arpt <- function(dataset, pz = 0.6, ci = FALSE, rep = 500, verbose = FALSE){
     arpt.value <- pz*uc.median # pz is the percentage for median
     return(arpt.value)
   }else{
+    if (ci == TRUE) {
+      warning("argument ci=TRUE is deprecated; please check the documentation",
+              call. = FALSE)
+      ci <- 0.95
+    }
     arpt2 <- function(dataset, i, pz){
       dataset.boot <- dataset[i,]
       dataset.boot <- dataset.boot[order(dataset.boot[,"ipuc"]), ]
-      dataset.boot$acum.wHX040 <- cumsum(dataset.boot$wHX040) # poblacional
+      dataset.boot$acum.wHX040 <- cumsum(dataset.boot$wHX040)
       dataset.boot$abscisa2 <-
         dataset.boot$acum.wHX040/dataset.boot$acum.wHX040[length(dataset.boot$acum.wHX040)]
       uc.median <- dataset.boot$ipuc[which(dataset.boot$abscisa2 > 0.5)[1]]
@@ -50,7 +61,7 @@ arpt <- function(dataset, pz = 0.6, ci = FALSE, rep = 500, verbose = FALSE){
       }
     boot.arpt.value <- boot::boot(dataset, statistic = arpt2, R = rep,
                       sim = "ordinary", stype = "i", pz = pz)
-    arpt.value.ci <- boot::boot.ci(boot.arpt.value, type = "basic")
+    arpt.value.ci <- boot::boot.ci(boot.arpt.value, conf = ci, type = "basic")
     if(verbose == FALSE){
       return(arpt.value.ci)
     }else{

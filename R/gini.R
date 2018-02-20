@@ -4,12 +4,15 @@
 #'
 #' @description Estimates the Gini inequality index of an income distribution.
 #'
-#' @param dataset a data.frame containing variables obtained by using the setupDataset function.
-#' @param ci logical; if  TRUE, 95 percent confidence interval is given for the Gini coefficient.
+#' @param dataset a data.frame containing the variables.
+#' @param ipuc a character string indicating the variable name of the income per unit of consumption. Default is "ipuc".
+#' @param hhcsw a character string indicating the variable name of the household cross-sectional weight. Default is "DB090".
+#' @param hhsize a character string indicating the variable name of the household size. Default is "HX040".
+#' @param ci a scalar or vector containing the confidence level(s) of the required interval(s). Default does not calculate the confidence interval.
 #' @param rep a number to do the confidence interval using boostrap technique.
-#' @param verbose logical; if TRUE the confindence interval is plotted.
+#' @param verbose logical; if TRUE the confidence interval is plotted.
 #'
-#' @details The Gini index is calculated using the equivalized disposable income of each individual. Two types of equivalence scales can be used, the modified OECD scale and the parametric scale of Buhmann et al. (1988). The default is the modified OECD scale  (see setupDataset).
+#' @details The Gini index is calculated using the equivalised disposable income of each individual. Two types of equivalence scales can be used, the modified OECD scale and the parametric scale of Buhmann et al. (1988). The default is the modified OECD scale  (see setupDataset).
 #'
 #' @return The value of the Gini index.
 #'
@@ -19,7 +22,7 @@
 #'
 #' @examples
 #' data(eusilc2)
-#' ATdataset <- setupDataset(eusilc2, country = "AT", s = "OECD")
+#' ATdataset <- setupDataset(eusilc2, country = "AT")
 #' gini(ATdataset)
 #'
 #' @seealso setupDataset
@@ -27,9 +30,16 @@
 #' @export
 
 
-gini <- function(dataset, ci = FALSE, rep = 1000, verbose = FALSE){
-  if(ci == FALSE){
-    dataset <- dataset[order(dataset[,"ipuc"]), ]
+gini <- function(dataset,
+                 ipuc = "ipuc", # The income per unit of consumption
+                 hhcsw = "DB090", # Household cross-sectional weight
+                 hhsize = "HX040", # Household size
+                 ci = NULL, rep = 1000, verbose = FALSE){
+
+  dataset <- dataset[order(dataset[,"ipuc"]), ]
+  dataset$wHX040 <- dataset[,hhcsw]*dataset[,hhsize] # household weights taking into account the size of the household
+
+  if(is.null(ci)){
     dataset$acum.wHX040 <- cumsum(dataset$wHX040)
     dataset$X <- dataset$ipuc*dataset$wHX040
     dataset$p_i <- dataset$wHX040/dataset$acum.wHX040[length(dataset$acum.wHX040)]
@@ -40,6 +50,11 @@ gini <- function(dataset, ci = FALSE, rep = 1000, verbose = FALSE){
     gini <- 100*(2*sum(dataset$ipuc*dataset$p_i*dataset$Fi)/M-1)
     return(gini)
   }else{
+    if (ci == TRUE) {
+      warning("argument ci=TRUE is deprecated; please check the documentation",
+              call. = FALSE)
+      ci <- 0.95
+    }
     gini3 <- function(dataset, i){
       dataset.boot <- dataset[i,]
       dataset.boot <- dataset.boot[order(dataset.boot[,"ipuc"]), ]
@@ -54,7 +69,7 @@ gini <- function(dataset, ci = FALSE, rep = 1000, verbose = FALSE){
     }
     boot.gini <- boot::boot(dataset, statistic = gini3, R = rep,
                      sim = "ordinary", stype = "i")
-    gini.ci <- boot::boot.ci(boot.gini, type = "basic")
+    gini.ci <- boot::boot.ci(boot.gini, conf = ci, type = "basic")
     if(verbose == FALSE){
       return(gini.ci)
     }else{
