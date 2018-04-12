@@ -6,7 +6,7 @@
 \usage{
 testTIP(dataset1, dataset2, ipuc = "ipuc", hhcsw = "DB090",
   hhsize = "HX040", pz = 0.6, same.arpt.value = NULL, norm = FALSE,
-  samplesize = 50)
+  samplesize = 50, alpha = 0.05)
 }
 \arguments{
 \item{dataset1}{a data.frame containing the variables.}
@@ -26,14 +26,16 @@ testTIP(dataset1, dataset2, ipuc = "ipuc", hhcsw = "DB090",
 \item{norm}{logical; if  TRUE, the normalised TIP curve ordinates are computed using the normalised poverty gaps (poverty gaps divided by the poverty threshold).}
 
 \item{samplesize}{an integer which represents the number of TIP curve ordinates to be estimated. The default is 50.}
+
+\item{alpha}{a scalar indicating the significance level. Default is 0.05.}
 }
 \value{
 A list with the following components:
 \itemize{
 \item Tvalue, the value of the test-statistic.
 \item p.value, simulated p-value of the test-statistic Tvalue (Wolak, 1989). It is calculated only when the Tvalue falls into an inconclusive region.
-\item decision, if the Tvalue is less than the lower-bound of the critical value at the 5 percent significance level the decision is "Do not reject null hypothesis".
-If the Tvalue is greater than the upper-bound of the critical value at the 5 percent significance level the decision is "Reject null hypothesis". Lower and upper-bounds
+\item decision, if the Tvalue is less than the lower-bound of the critical value at the \eqn{alpha} significance level the decision is "Do not reject null hypothesis".
+If the Tvalue is greater than the upper-bound of the critical value at the \eqn{alpha} significance level the decision is "Reject null hypothesis". Lower and upper-bounds
 critical values are obtained from Kodde and Palm (1986). If Tvalue falls into an inconclusive region (between the lower- and upper-bounds) the p-value will
 be estimated following Wolak (1989).
 }
@@ -52,7 +54,7 @@ data(eusilc2)
 ATdataset <- setupDataset(eusilc2, country = "AT")
 ATdataset1 <- setupDataset(eusilc2, country = "AT", region = "Burgenland")
 ATdataset2 <- setupDataset(eusilc2, country = "AT", region = "Carinthia")
-testTIP(ATdataset1, ATdataset2, same.arpt.value = arpt(ATdataset))
+testTIP(ATdataset1, ATdataset2, same.arpt.value = arpt(ATdataset), samplesize = 50, alpha = 0.05)
 
 }
 \references{

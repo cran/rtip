@@ -5,7 +5,7 @@
 \title{Test for Lorenz and Generalized Lorenz dominance}
 \usage{
 testGL(dataset1, dataset2, ipuc = "ipuc", hhcsw = "DB090",
-  hhsize = "HX040", generalized = TRUE, samplesize = 10)
+  hhsize = "HX040", generalized = TRUE, samplesize = 10, alpha = 0.05)
 }
 \arguments{
 \item{dataset1}{a data.frame containing the variables.}
@@ -21,6 +21,8 @@ testGL(dataset1, dataset2, ipuc = "ipuc", hhcsw = "DB090",
 \item{generalized}{logical; if FALSE the test will be applied to compare two Lorenz curves. Otherwise Generalized Lorenz curves will be compared.}
 
 \item{samplesize}{an integer which represents the number of Lorenz (Generalized Lorenz) curve ordinates to be estimated for comparison. The default is 10.}
+
+\item{alpha}{a scalar indicating the significance level. Default is 0.05.}
 }
 \value{
 A list with the following components:
@@ -28,7 +30,7 @@ A list with the following components:
 \itemize{
 \item Tvalue the value of the test-statistic
 \item p.value simulated p-value of the test-statistic Tvalue (Wolak, 1989). It is calculated only when the Tvalue falls into an inconclusive region.
-\item decision if the Tvalue is less than the lower-bound of the critical value at the 5 percent significance level the decision is "Do not reject null hypothesis". If the Tvalue is greater than the upper-bound of the critical value at the 5 percent significance level the decision is "Reject null hypothesis". Lower and upper-bounds critical values are obtained from Kodde and Palm (1986). If Tvalue falls into an inconclusive region (between the lower- and upper-bounds) the p-value will be estimated following Wolak (1989).
+\item decision if the Tvalue is less than the lower-bound of the critical value at the \eqn{alpha} significance level the decision is "Do not reject null hypothesis". If the Tvalue is greater than the upper-bound of the critical value at the \eqn{alpha} significance level the decision is "Reject null hypothesis". Lower and upper-bounds critical values are obtained from Kodde and Palm (1986). If Tvalue falls into an inconclusive region (between the lower- and upper-bounds) the p-value will be estimated following Wolak (1989).
 }
 }
 \description{
@@ -41,7 +43,7 @@ The null hypothesis to be tested is that the  Lorenz (Generalized Lorenz) curve 
 data(eusilc2)
 ATdataset1 <- setupDataset(eusilc2, country = "AT", region = "Burgenland")
 ATdataset2 <- setupDataset(eusilc2, country = "AT", region = "Carinthia")
-testGL(ATdataset1, ATdataset2, generalized = TRUE, samplesize = 10)
+testGL(ATdataset1, ATdataset2, generalized = TRUE, samplesize = 10, alpha = 0.05)
 
 }
 \references{
